@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS50x 2026 - Lecture 3 - Algorithms</title>
+    <style>
+        /* === MODERN DARK MODE — SIMPLE, NYAMAN DIBACA === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0f0f12;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Inter', sans-serif;
+            line-height: 1.7;
+            color: #e2e2e6;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .paper {
+            max-width: 820px;
+            width: 100%;
+            background: #17171c;
+            border-radius: 32px;
+            padding: 2.8rem 2.5rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+            backdrop-filter: blur(2px);
+            transition: all 0.2s ease;
+        }
+
+        /* gaya tipografi halus */
+        h1 {
+            font-size: 2.6rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            border-left: 5px solid #3b82f6;
+            padding-left: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.9rem;
+            font-weight: 550;
+            letter-spacing: -0.015em;
+            margin-top: 2.8rem;
+            margin-bottom: 1rem;
+            color: #f0f0f5;
+            border-bottom: 1px solid #2c2c32;
+            padding-bottom: 0.4rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            font-weight: 540;
+            margin-top: 2.2rem;
+            margin-bottom: 0.8rem;
+            color: #d4d4e0;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            color: #cfcfd9;
+            font-size: 1.07rem;
+        }
+
+        /* mempercantik kode / pseudocode */
+        .code-block, .pseudo-block {
+            background: #0b0b0f;
+            border-left: 4px solid #3b82f6;
+            padding: 1.1rem 1.5rem;
+            margin: 1.8rem 0;
+            border-radius: 18px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.96rem;
+            color: #c0caf5;
+            box-shadow: 0 8px 12px -8px #00000055;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .code-block {
+            border-left-color: #a855f7;
+        }
+
+        /* daftar dan catatan */
+        ul, ol {
+            margin: 1.2rem 0 1.5rem 1.8rem;
+            color: #cfcfd9;
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+            font-size: 1.07rem;
+        }
+
+        li::marker {
+            color: #6b8cff;
+        }
+
+        /* studi kasus / kotak sorotan */
+        .highlight {
+            background: #20202a;
+            border-radius: 24px;
+            padding: 1.8rem 2rem;
+            margin: 2.2rem 0;
+            border: 1px solid #2f2f3a;
+            transition: 0.1s;
+        }
+
+        .highlight p:last-child {
+            margin-bottom: 0;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, #2c2c32, #4f4f5e, #2c2c32);
+            margin: 2.5rem 0;
+        }
+
+        /* notasi matematis sederhana */
+        .math-symbol {
+            font-family: 'Times New Roman', serif;
+            background: #1e1e28;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            color: #b9c9ff;
+        }
+
+        strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* tombol / label gaya */
+        .badge {
+            display: inline-block;
+            background: #2b2b36;
+            color: #b2b2d6;
+            padding: 0.15rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            border: 1px solid #3e3e4a;
+            margin-right: 0.5rem;
+        }
+
+        /* responsive */
+        @media (max-width: 550px) {
+            .paper {
+                padding: 1.8rem 1.2rem;
+            }
+            h1 {
+                font-size: 2rem;
+                padding-left: 1rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* seleksi teks lebih kontras */
+        ::selection {
+            background: #3b82f6;
+            color: #0f0f12;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper">
+        <!-- Judul Utama -->
+        <h1>CS50x 2026 - Lecture 3 - Algorithms</h1>
+        <span class="badge">CS50 minggu ke-3</span> 
+        <span class="badge">algoritma · searching · sorting</span>
+
+        <!-- Pengantar -->
+        <h2>Pengantar</h2>
+        <p>
+            Hari ini adalah CS50 minggu ke-3. Kita akan membahas algoritma, khususnya algoritma 
+            <strong>pengurutan (sorting)</strong> dan <strong>pencarian (searching)</strong>. 
+            Algoritma adalah serangkaian langkah terstruktur untuk menyelesaikan suatu masalah, 
+            misalnya mengurutkan data dari yang paling kecil ke paling besar atau mencari informasi tertentu.
+        </p>
+        <p>
+            Tujuan pembelajaran hari ini adalah memperkenalkan blok bangunan penting dalam ilmu komputer, 
+            seperti algoritma-algoritma klasik yang umum dikenal dan sering muncul dalam wawancara teknis. 
+            Yang lebih penting, materi ini bertujuan membentuk cara berpikir dan metodologi dalam memecahkan masalah, 
+            dengan menunjukkan bagaimana algoritma dunia nyata diterjemahkan ke dalam proses yang bisa dijalankan komputer.
+        </p>
+
+        <!-- Studi Kasus: Divide and Conquer -->
+        <h2>Studi Kasus: Menghitung Jumlah Orang (Divide and Conquer)</h2>
+        <p>Sebagai contoh algoritma, kita memulai dengan cara menghitung jumlah orang di sebuah ruangan.</p>
+
+        <div class="highlight">
+            <p><strong>1. Menghitung satu per satu</strong><br>
+            Cara ini dilakukan dengan menunjuk setiap orang dan menghitung secara berurutan. Metode ini akurat tetapi memerlukan banyak langkah karena setiap orang dihitung secara individual.</p>
+
+            <p><strong>2. Menghitung dua-dua</strong><br>
+            Metode ini sedikit lebih cepat karena setiap langkah mencakup dua orang sekaligus, tetapi tetap bersifat linear.</p>
+
+            <p><strong>3. Metode pembagian dan penggabungan (divide and conquer)</strong><br>
+            Setiap orang memulai dengan angka 1, kemudian berpasangan dan menjumlahkan angka tersebut. Salah satu dari pasangan duduk, dan yang lain melanjutkan proses dengan pasangan berikutnya. Proses ini diulang hingga tersisa satu orang yang memegang total akhir. Secara teori, metode ini jauh lebih cepat karena setiap langkah mengurangi setengah jumlah orang yang masih berdiri.</p>
+        </div>
+        <p>Metode ketiga menunjukkan bagaimana membagi masalah besar menjadi bagian-bagian lebih kecil dapat meningkatkan efisiensi secara signifikan.</p>
+
+        <!-- Analisis Waktu Jalan -->
+        <h2>Analisis Waktu Jalan (Running Time)</h2>
+        <p>Untuk menganalisis efisiensi algoritma, kita melihat hubungan antara ukuran masalah dan waktu yang dibutuhkan untuk menyelesaikannya.</p>
+        <ul>
+            <li><strong>Menghitung satu per satu</strong> menghasilkan hubungan linear antara jumlah orang dan waktu.</li>
+            <li><strong>Metode dua-dua</strong> juga linear, tetapi dengan konstanta yang lebih kecil.</li>
+            <li><strong>Metode pembagian dan penggabungan</strong> menghasilkan pertumbuhan waktu yang jauh lebih lambat, bersifat logaritmik.</li>
+        </ul>
+        <p>Pendekatan ini mirip dengan contoh pencarian di buku telepon, di mana setiap langkah membagi masalah menjadi setengahnya.</p>
+
+        <!-- Array dan Konsep Searching -->
+        <h2>Array dan Konsep Searching</h2>
+        <p>
+            Array adalah struktur data paling dasar di komputer. Array merupakan sekumpulan lokasi memori yang tersusun berurutan (bersebelahan), 
+            di mana setiap elemen disimpan tepat di sebelah elemen lainnya.
+        </p>
+        <p>
+            Walaupun manusia dapat melihat seluruh isi array sekaligus, komputer hanya dapat mengakses satu elemen pada satu waktu. 
+            Untuk melihat nilai tertentu, komputer harus mengakses lokasi memori tersebut secara spesifik.
+        </p>
+        <p>Dalam pembahasan ini, kita menggunakan <strong>indeks berbasis nol (zero-based indexing)</strong>, artinya elemen pertama berada di indeks 0.</p>
+
+        <!-- Linear Search -->
+        <h2>Linear Search</h2>
+        <p>
+            Linear search adalah algoritma pencarian paling sederhana. Cara kerjanya adalah memeriksa setiap elemen satu per satu dari awal hingga akhir.
+        </p>
+        <p>
+            Jika elemen yang dicari ditemukan, pencarian berhenti dan menghasilkan nilai benar (true). 
+            Jika seluruh elemen telah diperiksa dan tidak ditemukan, hasilnya adalah salah (false).
+        </p>
+        <p>Pendekatan ini selalu berhasil, tetapi bisa lambat jika jumlah data besar.</p>
+
+        <!-- Binary Search -->
+        <h2>Binary Search</h2>
+        <p>
+            Binary search adalah algoritma pencarian yang lebih efisien, tetapi memiliki satu syarat utama: <strong>data harus sudah terurut</strong>.
+        </p>
+        <p>Langkah-langkahnya sebagai berikut:</p>
+        <ol>
+            <li>Periksa elemen di tengah data.</li>
+            <li>Jika elemen tengah sama dengan nilai yang dicari, pencarian selesai.</li>
+            <li>Jika nilai yang dicari lebih kecil, pencarian dilanjutkan ke setengah kiri.</li>
+            <li>Jika lebih besar, pencarian dilanjutkan ke setengah kanan.</li>
+        </ol>
+        <p>Proses ini diulang hingga data ditemukan atau tidak ada lagi elemen yang tersisa untuk diperiksa.</p>
+
+        <!-- Pseudocode dan Implementasi -->
+        <h2>Pseudocode dan Implementasi</h2>
+        <p>
+            Untuk mendeskripsikan algoritma secara jelas sebelum menulis kode, digunakan pseudocode. 
+            Pseudocode menggabungkan bahasa alami dan struktur pemrograman untuk menjelaskan langkah-langkah algoritma secara logis dan terstruktur.
+        </p>
+        <p>Baik linear search maupun binary search dapat dijelaskan dengan pseudocode sebelum diimplementasikan ke dalam bahasa C.</p>
+
+        <div class="pseudo-block">
+            // Contoh pseudocode binary search (versi sederhana)<br>
+            while (kiri <= kanan):<br>
+            &nbsp;&nbsp;&nbsp;tengah = (kiri + kanan) / 2<br>
+            &nbsp;&nbsp;&nbsp;jika (array[tengah] == target):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kembalikan true<br>
+            &nbsp;&nbsp;&nbsp;jika (array[tengah] < target):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kiri = tengah + 1<br>
+            &nbsp;&nbsp;&nbsp;lainnya:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;kanan = tengah - 1<br>
+            kembali false
+        </div>
+
+        <!-- Notasi Big O, Omega, Theta -->
+        <h2>Notasi Big O, Omega, dan Theta</h2>
+        <p>
+            Dalam analisis algoritma, digunakan notasi asimtotik untuk menggambarkan performa algoritma.
+        </p>
+        <ul>
+            <li><span class="math-symbol">O (Big O)</span> menunjukkan batas atas atau skenario terburuk (worst case).</li>
+            <li><span class="math-symbol">Ω (Omega)</span> menunjukkan batas bawah atau skenario terbaik (best case).</li>
+            <li><span class="math-symbol">Θ (Theta)</span> digunakan ketika batas atas dan batas bawah memiliki orde pertumbuhan yang sama.</li>
+        </ul>
+        <p>Notasi ini membantu membandingkan algoritma berdasarkan pertumbuhan waktu saat ukuran input semakin besar.</p>
+
+        <!-- String dan strcmp -->
+        <h2>String dan strcmp</h2>
+        <p>
+            Dalam bahasa C, string direpresentasikan sebagai array karakter. Karena itu, operator <code>==</code> tidak dapat digunakan untuk membandingkan isi dua string.
+        </p>
+        <p>
+            Untuk membandingkan string, digunakan fungsi <code>strcmp()</code> dari library <code>string.h</code>. 
+            Fungsi ini membandingkan karakter demi karakter dan mengembalikan nilai 0 jika kedua string sama persis.
+        </p>
+
+        <div class="code-block">
+            // Contoh penggunaan strcmp<br>
+            if (strcmp(nama1, nama2) == 0) {<br>
+            &nbsp;&nbsp;&nbsp;printf("sama persis\n");<br>
+            }
+        </div>
+
+        <!-- Struct -->
+        <h2>Struct</h2>
+        <p>
+            Struct digunakan untuk menggabungkan beberapa data yang saling berkaitan ke dalam satu tipe data kustom.
+        </p>
+        <p>
+            Sebagai contoh, sebuah struct dapat menyimpan nama dan nomor telepon dalam satu kesatuan, 
+            sehingga data lebih terorganisir dan aman dibandingkan menggunakan dua array terpisah.
+        </p>
+        <p>
+            Struct didefinisikan menggunakan keyword <code>struct</code>, dan sering dikombinasikan dengan <code>typedef</code> 
+            agar lebih mudah digunakan.
+        </p>
+
+        <div class="code-block">
+            typedef struct {<br>
+            &nbsp;&nbsp;&nbsp;char nama[50];<br>
+            &nbsp;&nbsp;&nbsp;char nomor[15];<br>
+            } kontak;
+        </div>
+
+        <!-- Penutup -->
+        <hr>
+        <h2>Penutup</h2>
+        <p>
+            Materi ini menekankan bahwa algoritma tidak hanya harus benar, tetapi juga efisien. 
+            Dengan memahami struktur data, algoritma pencarian, dan analisis kompleksitas, 
+            kita dapat membuat keputusan desain yang lebih baik dalam pemrograman.
+        </p>
+        <p style="font-style: italic; color: #a0a0b0; margin-top: 2rem;">
+            — Source from CS50, <a href="https://www.youtube.com/watch?v=6Svu_ae5ebk&t=3372s">CS50x 2026 - Lecture 3 - Algorithms</a>.
+        </p>
+    </div>
+</body>
+</html>
